@@ -8,6 +8,12 @@ import Signup from "../components/Auth/Signup";
 import ForgotPassword from "../components/Auth/ForgotPassword";
 import MainLayout from "../components/Layout/MainLayout";
 import AdminPanel from "../features/Admin/AdminPanel";
+import AccountsPage from "../features/Accounts/Account";
+import TransactionsPage from "../features/Transaction/Transaction";
+import PaymentsPage from "../features/Payments/Payments";
+import AnalyticsPage from "../features/AnalyticsReport/AnalyticsReport";
+import ProfileSettings from "../features/ProfileSetting/ProfileSetting";
+import SupportHelp from "../features/Support/Support";
 
 export default function AppRoutes() {
   return (
@@ -35,6 +41,66 @@ export default function AppRoutes() {
           // <ProtectedRoute>
           <MainLayout>
             <Profile />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/accounts"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <AccountsPage />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/transaction"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <TransactionsPage />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payments"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <PaymentsPage />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/analytics-report"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <AnalyticsPage />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile-setting"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <ProfileSettings />
+          </MainLayout>
+          // </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/support"
+        element={
+          // <ProtectedRoute>
+          <MainLayout>
+            <SupportHelp />
           </MainLayout>
           // </ProtectedRoute>
         }
