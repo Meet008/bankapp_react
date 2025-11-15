@@ -1,0 +1,27 @@
+src/
+ ├─ api/                 # Axios client & API helpers
+ │    └─ axiosClient.js
+ ├─ context/             # Context API for global state
+ │    └─ AuthContext.jsx
+ ├─ components/          # Reusable UI components
+ │    ├─ Auth/           # Login, Signup, OTP, etc.
+ │    ├─ Layout/         # Navbar, Sidebar, Footer
+ │    ├─ DataTable/      # Tables, Charts
+ │    ├─ Upload/         # File uploads
+ │    └─ UI/             # Buttons, Modals, Toasts
+ ├─ features/            # Feature modules/screens
+ │    ├─ Dashboard/
+ │    │    └─ Dashboard.jsx
+ │    ├─ Profile/
+ │    │    └─ Profile.jsx
+ │    └─ Admin/
+ │         └─ AdminPanel.jsx
+ ├─ hooks/               # Custom hooks
+ │    └─ useAuth.js
+ ├─ routes/              # React Router v6 routes
+ │    ├─ ProtectedRoute.jsx
+ │    └─ AppRoutes.jsx
+ ├─ theme/               # MUI Theme + Tailwind integration
+ │    └─ theme.js
+ ├─ App.jsx              # Entry component, renders routes
+ └─ index.js             # Wrap App with BrowserRouter + AuthProvider
