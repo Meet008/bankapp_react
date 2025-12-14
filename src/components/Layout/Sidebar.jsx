@@ -11,6 +11,7 @@ export default function Sidebar({ open, toggleSidebar }) {
     { text: "Payments", path: "/payments" },
     { text: "Analytics/Report", path: "/analytics-report" },
     { text: "Profile Setting", path: "/profile-setting" },
+    { text: "Users", path: "/users" },
     { text: "Support & Help", path: "/support" },
   ];
 
