@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowUpRight,
   Plus,
@@ -12,6 +13,7 @@ export default function Dashboard() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -100,22 +102,34 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <h2 className="text-xl font-semibold mb-3">Quick Actions</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <button className="bg-indigo-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-indigo-700 transition">
+        <button
+          onClick={() => navigate("/transaction")}
+          className="bg-indigo-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-indigo-700 transition"
+        >
           <Plus className="w-6 h-6 mb-1" />
           Add Money
         </button>
 
-        <button className="bg-green-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-green-700 transition">
+        <button
+          onClick={() => navigate("/transaction")}
+          className="bg-green-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-green-700 transition"
+        >
           <ArrowUpRight className="w-6 h-6 mb-1" />
           Send Money
         </button>
 
-        <button className="bg-blue-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-blue-700 transition">
+        <button
+          onClick={() => navigate("/payments")}
+          className="bg-blue-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-blue-700 transition"
+        >
           <CreditCard className="w-6 h-6 mb-1" />
           Pay Bills
         </button>
 
-        <button className="bg-orange-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-orange-700 transition">
+        <button
+          onClick={() => navigate("/accounts")}
+          className="bg-orange-600 text-white py-3 rounded-xl flex flex-col items-center shadow hover:bg-orange-700 transition"
+        >
           <Wallet className="w-6 h-6 mb-1" />
           View Accounts
         </button>
