@@ -28,11 +28,11 @@ export default function TransactionsPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await AxiosClient("transaction", "get", null, true);
+      const res = await AxiosClient(`transactions`, "get", null, true);
       console.log("transactions response:", res);
 
-      if (res?.transactions) {
-        setTransactions(res.transactions);
+      if (res?.data) {
+        setTransactions(res.data);
       } else {
         setError(res?.message || "No transactions found");
       }
@@ -312,7 +312,7 @@ export default function TransactionsPage() {
 
                   {/* Amount */}
                   <div className="flex items-center gap-2">
-                    {t.type === "credit" ? (
+                    {t.type === "CREDIT" ? (
                       <ArrowUp className="text-green-600" />
                     ) : (
                       <ArrowDown className="text-red-600" />
@@ -320,7 +320,7 @@ export default function TransactionsPage() {
 
                     <span
                       className={`font-semibold ${
-                        t.type === "credit" ? "text-green-600" : "text-red-600"
+                        t.type === "CREDIT" ? "text-green-600" : "text-red-600"
                       }`}
                     >
                       {t.amount}

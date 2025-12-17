@@ -34,10 +34,25 @@ export default function UsersPage() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (user) => {
-    setIsEdit(true);
-    setCurrentUser(user);
-    setIsModalOpen(true);
+  /* ------------------ Modal ------------------ */
+
+  const handleGetUser = async (id) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await AxiosClient(`users/${id}`, "get", null, true);
+      if (res) {
+        setIsEdit(true);
+        setCurrentUser(res?.data);
+        setIsModalOpen(true);
+      } else {
+        setError(res?.message || "No users found");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to fetch users");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const closeModal = () => {
@@ -45,16 +60,36 @@ export default function UsersPage() {
   };
 
   /* ------------------ Save User ------------------ */
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!currentUser.name || !currentUser.email) {
       alert("Name and Email are required");
       return;
     }
-
-    if (isEdit) {
-      setUsers(users.map((u) => (u.id === currentUser.id ? currentUser : u)));
-    } else {
-      setUsers([...users, { ...currentUser, id: Date.now() }]);
+    const data = {
+      name: currentUser.name,
+      email: currentUser.email,
+      phone: currentUser.phone,
+      address: currentUser.address,
+      role: currentUser.role,
+    };
+    setError("");
+    try {
+      const path = isEdit ? `users/${currentUser.id}` : "users";
+      const method = isEdit ? "put" : "post";
+      const res = await AxiosClient(path, method, data, true);
+      if (res) {
+        fetchUsers();
+        setSuccessMessage(
+          res?.message || `User ${isEdit ? "updated" : "added"} successfully`
+        );
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else {
+        setError(res?.message || "User could not be saved");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to save users");
+    } finally {
+      setLoading(false);
     }
 
     closeModal();
@@ -69,10 +104,26 @@ export default function UsersPage() {
 
   const confirmDelete = () => {
     if (userToDelete != null) {
-      setUsers((prev) => prev.filter((u) => u.id !== userToDelete));
+      handleDeleteUser(userToDelete);
     }
     setIsConfirmOpen(false);
     setUserToDelete(null);
+  };
+
+  const handleDeleteUser = async (id) => {
+    try {
+      const res = await AxiosClient(`users/${id}`, "delete", null, true);
+      if (res) {
+        fetchUsers();
+        setSuccessMessage(res?.message || "User deleted successfully");
+      } else {
+        setError(res?.message || "User could not be deleted");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cancelDelete = () => {
@@ -83,6 +134,7 @@ export default function UsersPage() {
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -90,7 +142,7 @@ export default function UsersPage() {
     try {
       const res = await AxiosClient("users", "get", null, true);
       if (res) {
-        setUsersList(res.users);
+        setUsersList(res.data);
       } else {
         setError(res?.message || "No users found");
       }
@@ -107,6 +159,22 @@ export default function UsersPage() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      {/* Success Toast */}
+      {successMessage && (
+        <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg z-50">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">User Management</h1>
         <button
@@ -138,25 +206,25 @@ export default function UsersPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
+            {usersList?.length > 0 ? (
+              usersList?.map((user) => (
                 <tr key={user.id} className="border-t">
-                  <td className="p-3">{user.name}</td>
-                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user?.name}</td>
+                  <td className="p-3">{user?.email}</td>
                   <td className="p-3">
                     <span className="px-2 py-1 rounded bg-indigo-100 text-indigo-700 text-sm">
-                      {user.role}
+                      {user?.role}
                     </span>
                   </td>
                   <td className="p-3 space-x-2">
                     <button
-                      onClick={() => openEditModal(user)}
+                      onClick={() => handleGetUser(user?.id)}
                       className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user?.id)}
                       className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                     >
                       Delete
@@ -249,6 +317,7 @@ export default function UsersPage() {
                 <option value="ADMIN">ADMIN</option>
                 <option value="MANAGER">MANAGER</option>
                 <option value="USER">USER</option>
+                <option value="CUSTOMER">CUSTOMER</option>
               </select>
             </div>
 

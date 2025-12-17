@@ -37,8 +37,9 @@ export default function AccountsPage() {
     setError("");
     try {
       const res = await AxiosClient("accounts", "get", null, true);
-      if (res) {
-        setAccounts(res.accounts);
+      console.log(res, "-res");
+      if (res?.data) {
+        setAccounts(res.data);
       } else {
         setError(res?.message || "No accounts found");
       }
@@ -117,7 +118,7 @@ export default function AccountsPage() {
                 {/* Status */}
                 <p
                   className={`inline-block px-3 py-1 rounded text-sm mb-4 ${
-                    acc.status === "Active"
+                    acc.status === "ACTIVE"
                       ? "bg-green-100 text-green-700"
                       : "bg-orange-100 text-orange-700"
                   }`}

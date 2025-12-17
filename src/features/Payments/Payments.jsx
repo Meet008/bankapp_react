@@ -92,7 +92,7 @@ export default function PaymentsPage() {
         true
       );
       if (res) {
-        setBillItems(res.payments);
+        setBillItems(res.data);
       } else {
         setError(res?.message || "No payments found");
       }
