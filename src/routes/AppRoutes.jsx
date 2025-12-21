@@ -21,6 +21,8 @@ import UsersPage from "../features/Users/Users";
 export default function AppRoutes() {
   const isAuth = !!localStorage.getItem("token");
 
+  const roles = ["ADMIN", "CUSTOMER"];
+
   return (
     <Routes>
       {/* Public Routes */}
@@ -38,7 +40,7 @@ export default function AppRoutes() {
       <Route
         path="/"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <Dashboard />
             </MainLayout>
@@ -49,7 +51,7 @@ export default function AppRoutes() {
       <Route
         path="/profile"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <Profile />
             </MainLayout>
@@ -60,7 +62,7 @@ export default function AppRoutes() {
       <Route
         path="/accounts"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <AccountsPage />
             </MainLayout>
@@ -71,7 +73,7 @@ export default function AppRoutes() {
       <Route
         path="/transaction"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <TransactionsPage />
             </MainLayout>
@@ -82,7 +84,7 @@ export default function AppRoutes() {
       <Route
         path="/payments"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <PaymentsPage />
             </MainLayout>
@@ -93,7 +95,7 @@ export default function AppRoutes() {
       <Route
         path="/analytics-report"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <AnalyticsPage />
             </MainLayout>
@@ -104,7 +106,7 @@ export default function AppRoutes() {
       <Route
         path="/profile-setting"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <ProfileSettings />
             </MainLayout>
@@ -115,7 +117,7 @@ export default function AppRoutes() {
       <Route
         path="/support"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <SupportHelp />
             </MainLayout>
@@ -126,7 +128,7 @@ export default function AppRoutes() {
       <Route
         path="/users"
         element={
-          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={roles}>
             <MainLayout>
               <UsersPage />
             </MainLayout>
