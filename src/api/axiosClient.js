@@ -19,7 +19,7 @@ export const AxiosClient = async (
       const authToken = token || localStorage.getItem("token");
       if (!authToken) {
         localStorage.clear();
-        window.location.assign("/sign-in");
+        window.location.assign("/login");
         return;
       }
       headers.Authorization = `Bearer ${authToken}`;

@@ -152,17 +152,35 @@ export default function Dashboard() {
               </li>
             ))}
           </ul>
-        ) : data?.transactions && data.transactions.length > 0 ? (
+        ) : data?.recentTransactions && data.recentTransactions.length > 0 ? (
           <ul className="divide-y">
-            {data.transactions.map((t) => (
-              <li key={t.id} className="py-3 flex justify-between">
-                <span>{t.label || t.category || "Transaction"}</span>
+            {data.recentTransactions.map((t) => (
+              <li key={t.id} className="py-4 flex justify-between items-center">
+                <div>
+                  <div className="font-medium">
+                    {t.description || t.label || t.category || "Transaction"}
+                  </div>
+                  {t.date && (
+                    <div className="text-xs text-gray-500">
+                      {new Date(t.date).toLocaleDateString("en-CA", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </div>
+                  )}
+                </div>
+
                 <span
-                  className={`${
-                    t.type === "credit" ? "text-green-600" : "text-red-600"
-                  } font-medium`}
+                  className={`font-medium ${
+                    t.type === "CREDIT" ? "text-green-600" : "text-red-600"
+                  }`}
                 >
-                  {t.amount}
+                  {t.type === "CREDIT" ? "+" : "-"}
+                  {Number(t.amount).toLocaleString("en-CA", {
+                    style: "currency",
+                    currency: "CAD",
+                  })}
                 </span>
               </li>
             ))}

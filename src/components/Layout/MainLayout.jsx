@@ -21,7 +21,7 @@ export default function MainLayout({ children }) {
         <Navbar toggleSidebar={toggleSidebar} />
 
         {/* Page content */}
-        <main className="flex-1 pt-16 p-6 overflow-auto">{children}</main>
+        <main className="flex-1 pt-5 p-6 overflow-auto">{children}</main>
       </div>
     </div>
   );
