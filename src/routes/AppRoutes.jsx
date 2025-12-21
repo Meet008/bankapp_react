@@ -38,7 +38,7 @@ export default function AppRoutes() {
       <Route
         path="/"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <Dashboard />
             </MainLayout>
@@ -49,7 +49,7 @@ export default function AppRoutes() {
       <Route
         path="/profile"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <Profile />
             </MainLayout>
@@ -60,7 +60,7 @@ export default function AppRoutes() {
       <Route
         path="/accounts"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <AccountsPage />
             </MainLayout>
@@ -71,7 +71,7 @@ export default function AppRoutes() {
       <Route
         path="/transaction"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <TransactionsPage />
             </MainLayout>
@@ -82,7 +82,7 @@ export default function AppRoutes() {
       <Route
         path="/payments"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <PaymentsPage />
             </MainLayout>
@@ -93,7 +93,7 @@ export default function AppRoutes() {
       <Route
         path="/analytics-report"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <AnalyticsPage />
             </MainLayout>
@@ -104,7 +104,7 @@ export default function AppRoutes() {
       <Route
         path="/profile-setting"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <ProfileSettings />
             </MainLayout>
@@ -115,7 +115,7 @@ export default function AppRoutes() {
       <Route
         path="/support"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <SupportHelp />
             </MainLayout>
@@ -126,7 +126,7 @@ export default function AppRoutes() {
       <Route
         path="/users"
         element={
-          <ProtectedRoute requiredRole={["admin", "manager", "CUSTOMER"]}>
+          <ProtectedRoute requiredRole={["ADMIN", "manager", "CUSTOMER"]}>
             <MainLayout>
               <UsersPage />
             </MainLayout>
@@ -135,9 +135,9 @@ export default function AppRoutes() {
       />
 
       <Route
-        path="/admin"
+        path="/ADMIN"
         element={
-          <ProtectedRoute requiredRole={["admin"]}>
+          <ProtectedRoute requiredRole={["ADMIN"]}>
             <MainLayout>
               <AdminPanel />
             </MainLayout>

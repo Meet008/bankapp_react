@@ -5,7 +5,7 @@ export default function Navbar({ toggleSidebar }) {
   const { user, logout } = useAuth();
 
   return (
-    <header className="fixed top-0 left-0 w-full md:ml-60 h-16 bg-blue-600 text-white flex items-center justify-between px-4 z-40 shadow">
+    <header className="top-0 left-0 h-16 bg-blue-600 text-white flex justify-between items-center  px-4 z-40 shadow">
       <div className="flex items-center">
         {/* Mobile Hamburger */}
         <button
@@ -28,7 +28,7 @@ export default function Navbar({ toggleSidebar }) {
         </button>
         <span className="font-bold text-lg">Dashboard</span>
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4" id="test_navbar">
         {user && <span>{user.name}</span>}
         <button
           className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100"

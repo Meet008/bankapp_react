@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, use, useContext, useState } from "react";
 import { AxiosClient } from "../api/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -11,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   );
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [loading, setLoading] = useState(false); // optional for async
+  const navigate = useNavigate();
 
   const login = async (email, password) => {
     setLoading(true);
@@ -19,21 +21,21 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-
-      if (!response || response.message) {
+      console.log("Login response:", response);
+      if (!response) {
         throw new Error(response?.message || "Invalid credentials");
       }
 
       // example response handling
-      localStorage.setItem("user", JSON.stringify(response?.user));
-      localStorage.setItem("role", response?.user?.role);
-      localStorage.setItem("user_id", response?.user?.id);
-      setUser(response?.user);
-      setRole(response?.user?.role); // or response.user.role;
+      localStorage.setItem("user", JSON.stringify(response?.data?.user));
+      localStorage.setItem("role", response?.data?.user?.role);
+      localStorage.setItem("user_id", response?.data?.user?.id);
+      setUser(response?.data?.user);
+      setRole(response?.data?.user?.role); // or response.user.role;
 
       // optional token storage
-      if (response.token) {
-        localStorage.setItem("token", response.token);
+      if (response?.data?.token) {
+        localStorage.setItem("token", response?.data?.token);
       }
 
       return response;
@@ -56,7 +58,14 @@ export const AuthProvider = ({ children }) => {
     setUser((prev) => ({ ...prev, ...updatedData }));
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setRole(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <AuthContext.Provider

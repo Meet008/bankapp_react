@@ -3,17 +3,28 @@ import { useNavigate } from "react-router-dom";
 
 export default function Sidebar({ open, toggleSidebar }) {
   const navigate = useNavigate();
-  const menuItems = [
+  const role = localStorage.getItem("role");
+  const adminMenus = [
     { text: "Dashboard", path: "/" },
-    { text: "Profile", path: "/profile" },
     { text: "Accounts", path: "/accounts" },
     { text: "Transaction", path: "/transaction" },
     { text: "Payments", path: "/payments" },
     { text: "Analytics/Report", path: "/analytics-report" },
-    { text: "Profile Setting", path: "/profile-setting" },
     { text: "Users", path: "/users" },
+    { text: "Profile Setting", path: "/profile-setting" },
     { text: "Support & Help", path: "/support" },
   ];
+
+  const customerMenus = [
+    { text: "Dashboard", path: "/" },
+    { text: "Transaction", path: "/transaction" },
+    { text: "Payments", path: "/payments" },
+    { text: "Analytics/Report", path: "/analytics-report" },
+    { text: "Profile Setting", path: "/profile-setting" },
+    { text: "Support & Help", path: "/support" },
+  ];
+
+  const menus = role === "ADMIN" ? adminMenus : customerMenus;
 
   return (
     <>
@@ -58,7 +69,7 @@ export default function Sidebar({ open, toggleSidebar }) {
 
         {/* Menu */}
         <nav className="mt-4">
-          {menuItems.map((item) => (
+          {menus?.map((item) => (
             <button
               key={item.text}
               className="w-full text-left px-4 py-2 hover:bg-blue-500"
