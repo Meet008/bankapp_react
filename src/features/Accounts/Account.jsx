@@ -36,7 +36,7 @@ export default function AccountsPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await AxiosClient("accounts", "get", null, true);
+      const res = await AxiosClient("accounts/me", "get", null, true);
       console.log(res, "-res");
       if (res?.data) {
         setAccounts(res.data);
@@ -113,7 +113,12 @@ export default function AccountsPage() {
                 </div>
 
                 {/* Balance */}
-                <p className="text-3xl font-bold mb-4">{acc.balance}</p>
+                <p className="text-3xl font-bold mb-4">
+                  {Number(acc.balance).toLocaleString("en-CA", {
+                    style: "currency",
+                    currency: "CAD",
+                  })}
+                </p>
 
                 {/* Status */}
                 <p

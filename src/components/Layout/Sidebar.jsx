@@ -6,7 +6,6 @@ export default function Sidebar({ open, toggleSidebar }) {
   const role = localStorage.getItem("role");
   const adminMenus = [
     { text: "Dashboard", path: "/" },
-    { text: "Accounts", path: "/accounts" },
     { text: "Transaction", path: "/transaction" },
     { text: "Payments", path: "/payments" },
     { text: "Analytics/Report", path: "/analytics-report" },
@@ -17,6 +16,7 @@ export default function Sidebar({ open, toggleSidebar }) {
 
   const customerMenus = [
     { text: "Dashboard", path: "/" },
+    { text: "Accounts", path: "/accounts" },
     { text: "Transaction", path: "/transaction" },
     { text: "Payments", path: "/payments" },
     { text: "Analytics/Report", path: "/analytics-report" },

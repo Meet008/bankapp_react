@@ -35,15 +35,12 @@ export default function PaymentsPage() {
     },
   ]);
 
-  const [recentBills, setRecentBills] = React.useState([
-    { id: 1, name: "Electricity Bill", amount: "₹1,200", date: "2025-11-03" },
-    { id: 2, name: "Mobile Recharge", amount: "₹249", date: "2025-11-04" },
-    { id: 3, name: "Credit Card Bill", amount: "₹5,000", date: "2025-11-07" },
-  ]);
+  const [recentBills, setRecentBills] = React.useState([]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+  const [paymentCategories, setPaymentCategories] = useState([]);
+
   const [scheduleForm, setScheduleForm] = useState({
     billType: "",
     amount: "",
@@ -86,13 +83,13 @@ export default function PaymentsPage() {
     setError("");
     try {
       const res = await AxiosClient(
-        `payments/user/${localStorage.getItem("user_id")}`,
+        `transactions/me?category=PAY_BILL`,
         "get",
         null,
         true
       );
       if (res) {
-        setBillItems(res.data);
+        setRecentBills(res.data);
       } else {
         setError(res?.message || "No payments found");
       }
@@ -103,8 +100,23 @@ export default function PaymentsPage() {
     }
   };
 
+  const fetchPaymentsCategory = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await AxiosClient(`payments/meta`, "get", null, true);
+      if (res) {
+        setPaymentCategories(res.data);
+      } else {
+        setError(res?.message || "No payment categories found");
+      }
+    } catch (error) {
+      setError(error?.message || "Failed to fetch payment categories");
+    }
+  };
   useEffect(() => {
     fetchPayments();
+    fetchPaymentsCategory();
   }, []);
 
   return (
@@ -161,11 +173,18 @@ export default function PaymentsPage() {
             className="border rounded-lg p-2"
           >
             <option value="">Select Bill Type</option>
-            <option value="Electricity">Electricity</option>
+            {paymentCategories.map((cat) => {
+              return (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              );
+            })}
+            {/* <option value="Electricity">Electricity</option>
             <option value="Water">Water</option>
             <option value="Mobile Recharge">Mobile Recharge</option>
             <option value="Internet">Internet</option>
-            <option value="Credit Card">Credit Card</option>
+            <option value="Credit Card">Credit Card</option> */}
           </select>
 
           <input
@@ -231,12 +250,31 @@ export default function PaymentsPage() {
                 key={bill.id}
                 className="py-4 flex justify-between items-center"
               >
+                {/* Left side: what + when */}
                 <div>
-                  <p className="font-semibold">{bill.name}</p>
-                  <p className="text-gray-500 text-sm">{bill.date}</p>
+                  <p className="font-semibold">
+                    {bill.description || `${bill.billType} Bill`}
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    {bill.billType.charAt(0) +
+                      bill.billType.slice(1).toLowerCase()}{" "}
+                    •{" "}
+                    {new Date(bill.date).toLocaleDateString("en-CA", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
 
-                <p className="text-indigo-600 font-semibold">{bill.amount}</p>
+                {/* Right side: amount */}
+                <p className="text-red-600 font-semibold">
+                  -
+                  {Number(bill.amount).toLocaleString("en-CA", {
+                    style: "currency",
+                    currency: "CAD",
+                  })}
+                </p>
               </li>
             ))}
           </ul>
