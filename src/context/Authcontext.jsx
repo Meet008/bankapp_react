@@ -1,21 +1,44 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, use, useContext, useState } from "react";
+import { AxiosClient } from "../api/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null
+  );
+  const [role, setRole] = useState(localStorage.getItem("role"));
   const [loading, setLoading] = useState(false); // optional for async
+  const navigate = useNavigate();
 
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // Dummy login
-      await new Promise((res) => setTimeout(res, 500));
-      if (email === "admin@test.com" && password === "123456") {
-        setUser({ name: "Admin User", email, role: "Admin" });
-      } else {
-        throw new Error("Invalid credentials");
+      const response = await AxiosClient("auth/login", "post", {
+        email,
+        password,
+      });
+      console.log("Login response:", response);
+      if (!response) {
+        throw new Error(response?.message || "Invalid credentials");
       }
+
+      // example response handling
+      localStorage.setItem("user", JSON.stringify(response?.data?.user));
+      localStorage.setItem("role", response?.data?.user?.role);
+      localStorage.setItem("user_id", response?.data?.user?.id);
+      setUser(response?.data?.user);
+      setRole(response?.data?.user?.role); // or response.user.role;
+
+      // optional token storage
+      if (response?.data?.token) {
+        localStorage.setItem("token", response?.data?.token);
+      }
+
+      return response;
     } finally {
       setLoading(false);
     }
@@ -35,11 +58,27 @@ export const AuthProvider = ({ children }) => {
     setUser((prev) => ({ ...prev, ...updatedData }));
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setRole(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, signup, updateUser, loading }}
+      value={{
+        user,
+        loading,
+        role,
+        login,
+        logout,
+        signup,
+        updateUser,
+        loading,
+      }}
     >
       {children}
     </AuthContext.Provider>

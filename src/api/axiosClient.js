@@ -1,48 +1,40 @@
 import axios from "axios";
+import { ENDPOINT } from "../config/config";
 
-// Better way to handle environment variables
-const BASE_URL =
-  process.env.REACT_APP_API_BASE?.trim() !== ""
-    ? process.env.REACT_APP_API_BASE
-    : "/";
+export const AxiosClient = async (
+  url,
+  method = "get",
+  data = null,
+  withBearer = false,
+  headers_ = {},
+  token
+) => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      ...headers_,
+    };
 
-const axiosClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 15000,
-});
-
-// REQUEST INTERCEPTOR
-axiosClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (withBearer) {
+      const authToken = token || localStorage.getItem("token");
+      if (!authToken) {
+        localStorage.clear();
+        window.location.assign("/sign-in");
+        return;
+      }
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+    const response = await axios({
+      method,
+      url: `${ENDPOINT}${url}`,
+      data,
+      headers,
+      timeout: 15000,
+    });
 
-// RESPONSE INTERCEPTOR
-axiosClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle token expiration or 401 errors globally
-    if (error.response?.status === 401) {
-      console.warn("Unauthorized: Token expired or invalid");
-
-      // OPTIONAL: Auto logout
-      // localStorage.removeItem("token");
-      // window.location.href = "/login";
-    }
-
-    return Promise.reject(error);
+    return response.data;
+  } catch (error) {
+    throw error?.response?.data || error;
   }
-);
-
-export default axiosClient;
+};

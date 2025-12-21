@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -13,26 +13,63 @@ import {
   Legend,
 } from "recharts";
 import { Download } from "lucide-react";
+import { AxiosClient } from "../../api/axiosClient";
 
 export default function AnalyticsPage() {
-  const monthlySpending = [
+  const [monthlySpending, setMonthlySpending] = useState([
     { month: "Jan", amount: 12000 },
     { month: "Feb", amount: 14500 },
     { month: "Mar", amount: 11000 },
     { month: "Apr", amount: 16000 },
     { month: "May", amount: 18000 },
     { month: "Jun", amount: 15000 },
-  ];
+  ]);
 
-  const categoryData = [
+  const [categoryData, setCategoryData] = useState([
     { name: "Food", value: 4500 },
     { name: "Shopping", value: 6200 },
     { name: "Bills", value: 3800 },
     { name: "Travel", value: 2200 },
     { name: "Others", value: 1500 },
-  ];
+  ]);
 
+  const [mainCardData, setMainCardData] = useState({
+    total_spending: "₹18,000",
+    highest_category: "Shopping",
+    monthly_average: "₹14,800",
+  });
   const COLORS = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444", "#6366F1"];
+
+  const [anaalytics, setAnalytics] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchAnalyticsReport = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await AxiosClient(
+        `analytics/user/${localStorage.getItem("user_id")}`,
+        "get",
+        null,
+        true
+      );
+      console.log("anaalytics response:", res);
+
+      if (res?.anaalytics) {
+      } else {
+        setError(res?.message || "No anaalytics found");
+      }
+    } catch (err) {
+      setError(err?.message || "Failed to fetch anaalytics");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalyticsReport();
+  }, []);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -40,9 +77,14 @@ export default function AnalyticsPage() {
 
       {/* Monthly Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
-        <SummaryCard label="Total Spending (This Month)" value="₹18,000" />
-        <SummaryCard label="Highest Spending Category" value="Shopping" />
-        <SummaryCard label="Average Monthly Spend" value="₹14,800" />
+        {Object.entries(mainCardData)?.map((data) => {
+          return (
+            <SummaryCard
+              label={data?.[0]?.replace("_", " ")}
+              value={data?.[1]}
+            />
+          );
+        })}
       </div>
 
       {/* Charts */}
@@ -116,7 +158,7 @@ export default function AnalyticsPage() {
 /* Small Component for Summary Cards */
 const SummaryCard = ({ label, value }) => (
   <div className="bg-white p-5 rounded-xl shadow">
-    <p className="text-gray-500 text-sm">{label}</p>
+    <p className="text-gray-500 text-sm capitalize">{label}</p>
     <p className="text-2xl font-bold mt-2">{value}</p>
   </div>
 );

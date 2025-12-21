@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/Authcontext";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -68,9 +69,24 @@ export default function Login() {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            Login
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              Login{" "}
+              {loading && (
+                <Icon
+                  icon={"eos-icons:bubble-loading"}
+                  style={{ marginLeft: "20px" }}
+                />
+              )}
+            </div>
           </button>
         </form>
 

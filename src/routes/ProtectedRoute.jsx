@@ -4,7 +4,16 @@ import { useAuth } from "../context/Authcontext";
 
 export default function ProtectedRoute({ children, requiredRole }) {
   const { user, loading } = useAuth();
-
+console.log(
+  "ProtectedRoute - user:",
+  user,
+  "loading:",
+  loading,
+  "requiredRole:",
+  requiredRole,
+  "isRequiredRoleIncluded:",
+  requiredRole.includes(user?.role)
+);
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen">
