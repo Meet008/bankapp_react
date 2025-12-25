@@ -48,9 +48,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user_id", response?.data?.user?.id);
       setUser(response?.data?.user);
       setRole(response?.data?.user?.role); // or response.user.role;
+      navigate("/admin-panel", { replace: true });
 
-      // optional token storage
       if (response?.data?.token) {
+        // optional token storage
         localStorage.setItem("token", response?.data?.token);
       }
 
@@ -77,9 +78,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setRole(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    localStorage.removeItem("token");
+    localStorage.clear();
     navigate("/login", { replace: true });
   };
 

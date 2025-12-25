@@ -5,11 +5,11 @@ export default function PageNotFound() {
   const role = localStorage.getItem("role");
 
   const goHome = () => {
-    if (role === "ADMIN") {
-      navigate("/admin-panel");
-    } else {
-      navigate("/");
-    }
+    // if (role === "ADMIN") {
+    //   navigate("/admin-panel");
+    // } else {
+    navigate("/");
+    // }
   };
 
   return (

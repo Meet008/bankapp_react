@@ -6,7 +6,7 @@ export default function Sidebar({ open, toggleSidebar }) {
   const role = localStorage.getItem("role");
 
   const adminMenus = [
-    { text: "Dashboard", path: "/admin-panel" },
+    { text: "Dashboard", path: "/" },
     { text: "Users", path: "/users" },
   ];
 

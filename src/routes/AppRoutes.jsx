@@ -27,6 +27,11 @@ export default function AppRoutes() {
 
   const adminRoutes = [
     {
+      path: "/",
+      element: <Dashboard />,
+      roles: ["ADMIN"],
+    },
+    {
       path: "/admin-panel",
       element: <AdminPanel />,
       roles: ["ADMIN"],
