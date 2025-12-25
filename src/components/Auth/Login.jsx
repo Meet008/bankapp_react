@@ -17,7 +17,7 @@ export default function Login() {
 
     try {
       await login(email, password); // implement login in AuthContext
-      navigate("/"); // redirect to dashboard
+      // AuthContext handles redirection after successful login
     } catch (err) {
       setError("Invalid email or password");
     }

@@ -1,4 +1,4 @@
-import React, { createContext, use, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { AxiosClient } from "../api/axiosClient";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,22 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [loading, setLoading] = useState(false); // optional for async
   const navigate = useNavigate();
+
+  // Sync auth state when storage changes (e.g., logout in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedUser = localStorage.getItem("user");
+      const storedRole = localStorage.getItem("role");
+
+      if (!storedUser) {
+        setUser(null);
+        setRole(null);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -77,7 +93,6 @@ export const AuthProvider = ({ children }) => {
         logout,
         signup,
         updateUser,
-        loading,
       }}
     >
       {children}

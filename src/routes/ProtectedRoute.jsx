@@ -4,16 +4,6 @@ import { useAuth } from "../context/Authcontext";
 
 export default function ProtectedRoute({ children, requiredRole }) {
   const { user, loading } = useAuth();
-console.log(
-  "ProtectedRoute - user:",
-  user,
-  "loading:",
-  loading,
-  "requiredRole:",
-  requiredRole,
-  "isRequiredRoleIncluded:",
-  requiredRole.includes(user?.role)
-);
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen">
@@ -21,18 +11,14 @@ console.log(
       </div>
     );
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // Optional role-based access
   if (requiredRole && !requiredRole.includes(user.role)) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <span className="text-red-600 text-lg">
-          You do not have access to this page.
-        </span>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return children;
+
 }

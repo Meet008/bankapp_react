@@ -4,14 +4,10 @@ import { useNavigate } from "react-router-dom";
 export default function Sidebar({ open, toggleSidebar }) {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
+
   const adminMenus = [
-    { text: "Dashboard", path: "/" },
-    { text: "Transaction", path: "/transaction" },
-    { text: "Payments", path: "/payments" },
-    { text: "Analytics/Report", path: "/analytics-report" },
+    { text: "Dashboard", path: "/admin-panel" },
     { text: "Users", path: "/users" },
-    { text: "Profile Setting", path: "/profile-setting" },
-    { text: "Support & Help", path: "/support" },
   ];
 
   const customerMenus = [

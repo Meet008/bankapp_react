@@ -17,138 +17,105 @@ import AnalyticsPage from "../features/AnalyticsReport/AnalyticsReport";
 import ProfileSettings from "../features/ProfileSetting/ProfileSetting";
 import SupportHelp from "../features/Support/Support";
 import UsersPage from "../features/Users/Users";
+import { useAuth } from "../context/Authcontext";
+import PageNotFound from "../features/PageNotFound/PageNotFound";
 
 export default function AppRoutes() {
-  const isAuth = !!localStorage.getItem("token");
+  const { user } = useAuth();
 
   const roles = ["ADMIN", "CUSTOMER"];
+
+  const adminRoutes = [
+    {
+      path: "/admin-panel",
+      element: <AdminPanel />,
+      roles: ["ADMIN"],
+    },
+    {
+      path: "/users",
+      element: <UsersPage />,
+      roles: ["ADMIN"],
+    },
+  ];
+
+  const customerRoutes = [
+    {
+      path: "/",
+      element: <Dashboard />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/profile",
+      element: <Profile />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/accounts",
+      element: <AccountsPage />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/transaction",
+      element: <TransactionsPage />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/payments",
+      element: <PaymentsPage />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/analytics-report",
+      element: <AnalyticsPage />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/profile-setting",
+      element: <ProfileSettings />,
+      roles: ["CUSTOMER"],
+    },
+    {
+      path: "/support",
+      element: <SupportHelp />,
+      roles: ["CUSTOMER"],
+    },
+  ];
+
+  const role = localStorage.getItem("role");
+
+  const allowedRoutes = role === "ADMIN" ? adminRoutes : customerRoutes;
 
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={isAuth ? <Navigate to="/" /> : <Login />} />
-      <Route
-        path="/signup"
-        element={isAuth ? <Navigate to="/" /> : <Signup />}
-      />
+      <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+      <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
       <Route
         path="/forgot-password"
-        element={isAuth ? <Navigate to="/" /> : <ForgotPassword />}
+        element={user ? <Navigate to="/" /> : <ForgotPassword />}
       />
-
-      {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/accounts"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <AccountsPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/transaction"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <TransactionsPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/payments"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <PaymentsPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/analytics-report"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <AnalyticsPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/profile-setting"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <ProfileSettings />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/support"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <SupportHelp />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/users"
-        element={
-          <ProtectedRoute requiredRole={roles}>
-            <MainLayout>
-              <UsersPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/ADMIN"
-        element={
-          <ProtectedRoute requiredRole={["ADMIN"]}>
-            <MainLayout>
-              <AdminPanel />
-            </MainLayout>
-          </ProtectedRoute>
-        }
-      />
+      {/* 🔐 Protected Routes */}
+      {allowedRoutes.map(({ path, element, roles }) => (
+        <Route
+          key={path}
+          path={path}
+          element={
+            <ProtectedRoute requiredRole={roles}>
+              <MainLayout>{element}</MainLayout>
+            </ProtectedRoute>
+          }
+        />
+      ))}
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route
+        path="*"
+        element={
+          <MainLayout>
+            <PageNotFound />
+          </MainLayout>
+        }
+      />
     </Routes>
   );
 }
