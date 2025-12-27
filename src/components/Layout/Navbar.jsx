@@ -5,7 +5,7 @@ export default function Navbar({ toggleSidebar }) {
   const { user, logout } = useAuth();
 
   return (
-    <header className="top-0 left-0 h-16 bg-blue-600 text-white flex justify-between items-center  px-4 z-40 shadow">
+    <header className="top-0 left-0 h-16 bg-blue-600 text-white flex justify-between items-center  px-4 shadow">
       <div className="flex items-center">
         {/* Mobile Hamburger */}
         <button

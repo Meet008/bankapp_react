@@ -10,7 +10,7 @@ import ForgotPassword from "../components/Auth/ForgotPassword";
 import Profile from "../features/Profile/Profile";
 import MainLayout from "../components/Layout/MainLayout";
 import AdminPanel from "../features/Admin/AdminPanel";
-import AccountsPage from "../features/Accounts/Account";
+import AccountsPage from "../features/Admin/Accounts/Account";
 import TransactionsPage from "../features/Transaction/Transaction";
 import PaymentsPage from "../features/Payments/Payments";
 import AnalyticsPage from "../features/AnalyticsReport/AnalyticsReport";
@@ -41,6 +41,11 @@ export default function AppRoutes() {
       element: <UsersPage />,
       roles: ["ADMIN"],
     },
+    {
+      path: "/accounts",
+      element: <AccountsPage />,
+      roles: ["ADMIN"],
+    },
   ];
 
   const customerRoutes = [
@@ -54,11 +59,7 @@ export default function AppRoutes() {
       element: <Profile />,
       roles: ["CUSTOMER"],
     },
-    {
-      path: "/accounts",
-      element: <AccountsPage />,
-      roles: ["CUSTOMER"],
-    },
+
     {
       path: "/transaction",
       element: <TransactionsPage />,

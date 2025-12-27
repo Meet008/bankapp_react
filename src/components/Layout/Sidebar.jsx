@@ -8,11 +8,11 @@ export default function Sidebar({ open, toggleSidebar }) {
   const adminMenus = [
     { text: "Dashboard", path: "/" },
     { text: "Users", path: "/users" },
+    { text: "Accounts", path: "/accounts" },
   ];
 
   const customerMenus = [
     { text: "Dashboard", path: "/" },
-    { text: "Accounts", path: "/accounts" },
     { text: "Transaction", path: "/transaction" },
     { text: "Payments", path: "/payments" },
     { text: "Analytics/Report", path: "/analytics-report" },
@@ -34,7 +34,7 @@ export default function Sidebar({ open, toggleSidebar }) {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-60 bg-blue-600 text-white shadow-lg z-30 transform transition-transform duration-300
+        className={`fixed top-0 left-0 h-full w-60 bg-blue-600 text-white shadow-lg  transform transition-transform duration-300
           ${
             open ? "translate-x-0" : "-translate-x-60"
           } md:translate-x-0 md:relative`}
