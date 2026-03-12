@@ -86,7 +86,7 @@ export default function PaymentsPage() {
         `transactions/me?category=PAY_BILL`,
         "get",
         null,
-        true
+        true,
       );
       if (res) {
         setRecentBills(res.data);
@@ -259,7 +259,11 @@ export default function PaymentsPage() {
                     {bill.billType.charAt(0) +
                       bill.billType.slice(1).toLowerCase()}{" "}
                     •{" "}
-                    {new Date(bill.date).toLocaleDateString("en-CA", {
+                    {new Date(
+                      ...bill.date
+                        .split("-")
+                        .map((v, i) => (i === 1 ? v - 1 : v)),
+                    ).toLocaleDateString("en-CA", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",

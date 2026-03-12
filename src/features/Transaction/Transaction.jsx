@@ -297,7 +297,11 @@ export default function TransactionsPage() {
                   </div>
                   {t.date && (
                     <div className="text-xs text-gray-500">
-                      {new Date(t.date).toLocaleDateString("en-CA", {
+                      {new Date(
+                        ...t.date
+                          .split("-")
+                          .map((v, i) => (i === 1 ? v - 1 : v)),
+                      ).toLocaleDateString("en-CA", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",

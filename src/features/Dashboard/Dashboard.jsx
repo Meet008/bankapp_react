@@ -28,7 +28,7 @@ export default function Dashboard() {
         `dashboard/summary/${localStorage.getItem("user_id")}`,
         "get",
         null,
-        true
+        true,
       );
       if (res) {
         setData(res.data);
@@ -166,7 +166,11 @@ export default function Dashboard() {
                     </div>
                     {t.date && (
                       <div className="text-xs text-gray-500">
-                        {new Date(t.date).toLocaleDateString("en-CA", {
+                        {new Date(
+                          ...t.date
+                            .split("-")
+                            .map((v, i) => (i === 1 ? v - 1 : v)),
+                        ).toLocaleDateString("en-CA", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
