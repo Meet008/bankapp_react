@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Wallet, CreditCard, Landmark, ArrowRight, Send } from "lucide-react";
-import { AxiosClient } from "../../../api/axiosClient";
+import { AxiosClient } from "../../api/axiosClient.js";
 
 export default function AccountsPage() {
   const [accounts, setAccounts] = useState([
