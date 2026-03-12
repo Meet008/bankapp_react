@@ -41,11 +41,6 @@ export default function AppRoutes() {
       element: <UsersPage />,
       roles: ["ADMIN"],
     },
-    {
-      path: "/accounts",
-      element: <AccountsPage />,
-      roles: ["ADMIN"],
-    },
   ];
 
   const customerRoutes = [
@@ -59,7 +54,11 @@ export default function AppRoutes() {
       element: <Profile />,
       roles: ["CUSTOMER"],
     },
-
+    {
+      path: "/accounts",
+      element: <AccountsPage />,
+      roles: ["CUSTOMER"],
+    },
     {
       path: "/transaction",
       element: <TransactionsPage />,

@@ -8,14 +8,14 @@ export default function Sidebar({ open, toggleSidebar }) {
   const adminMenus = [
     { text: "Dashboard", path: "/" },
     { text: "Users", path: "/users" },
-    { text: "Accounts", path: "/accounts" },
   ];
 
   const customerMenus = [
     { text: "Dashboard", path: "/" },
-    { text: "Transaction", path: "/transaction" },
+    { text: "Accounts", path: "/accounts" },
+    { text: "Transactions", path: "/transaction" },
     { text: "Payments", path: "/payments" },
-    { text: "Analytics/Report", path: "/analytics-report" },
+    { text: "Analytics/Reports", path: "/analytics-report" },
     { text: "Profile Setting", path: "/profile-setting" },
     { text: "Support & Help", path: "/support" },
   ];
