@@ -108,7 +108,7 @@ export default function AccountsPage() {
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">{acc.type}</h2>
-                    <p className="text-gray-500 text-sm">{acc.number}</p>
+                    <p className="text-gray-500 text-sm">{acc.accountNumber}</p>
                   </div>
                 </div>
 

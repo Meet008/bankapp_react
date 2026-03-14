@@ -1,13 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function Drawer({ open, onClose, title = "Money Transfer" }) {
+export default function Drawer({
+  open,
+  onClose,
+  title = "Add Money",
+  accountInfo = [],
+  onSubmit,
+}) {
+  const accounts = accountInfo?.accounts || [];
+  const isSendMoney = title === "Send Money";
+
   const [formData, setFormData] = useState({
-    fromAccount: "",
+    accountId: "",
     toAccount: "",
     amount: "",
-    transferType: "IMPS",
     note: "",
   });
+
+  // default account = CHEQUING
+  useEffect(() => {
+    if (accounts.length > 0) {
+      const chequing = accounts.find((a) => a.type === "CHEQUING");
+
+      setFormData((prev) => ({
+        ...prev,
+        accountId: chequing?.id || "",
+        toAccount: "",
+        amount: "",
+        note: "",
+      }));
+    }
+  }, [open, accounts]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,20 +38,48 @@ export default function Drawer({ open, onClose, title = "Money Transfer" }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Transfer Data:", formData);
+
+    if (!onSubmit) return;
+
+    if (title === "Add Money") {
+      onSubmit({
+        accountId: formData.accountId,
+        amount: Number(formData.amount),
+        note: formData.note,
+      });
+    } else if (title === "Send Money") {
+      onSubmit({
+        fromAccountId: formData.accountId,
+        toAccount: formData.toAccount,
+        amount: Number(formData.amount),
+        note: formData.note,
+      });
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      accountId: "",
+      toAccount: "",
+      amount: "",
+      note: "",
+    });
+    onClose();
   };
 
   return (
     <>
+      {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black/40 transition-opacity ${
           open
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
-        onClick={onClose}
+        onClick={handleClose}
       />
 
+      {/* Drawer */}
       <div
         className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-xl transform transition-transform ${
           open ? "translate-x-0" : "translate-x-full"
@@ -36,55 +87,66 @@ export default function Drawer({ open, onClose, title = "Money Transfer" }) {
         role="dialog"
         aria-modal="true"
       >
+        {/* Header */}
         <div className="p-4 border-b flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
+
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-600 hover:text-gray-800 p-2 rounded"
-            aria-label="Close drawer"
           >
             ✕
           </button>
         </div>
+
+        {/* Form */}
         <div className="p-4 overflow-y-auto h-[calc(100%-64px)]">
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* From Account */}
+            {/* Select Account */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
-                From Account
+                Select Account
               </label>
-              <input
-                type="text"
-                name="fromAccount"
-                placeholder="Enter sender account number"
-                value={formData.fromAccount}
+
+              <select
+                name="accountId"
+                value={formData.accountId}
                 onChange={handleChange}
                 className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
+              >
+                {accounts.map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {acc.type} - ${acc.balance.toLocaleString()}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* To Account */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                To Account
-              </label>
-              <input
-                type="text"
-                name="toAccount"
-                placeholder="Enter receiver account number"
-                value={formData.toAccount}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-            </div>
+            {/* To Account (ONLY for Send Money) */}
+            {isSendMoney && (
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  To Account
+                </label>
+
+                <input
+                  type="text"
+                  name="toAccount"
+                  placeholder="Enter receiver account number"
+                  value={formData.toAccount}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+            )}
 
             {/* Amount */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
-                Amount (₹)
+                Amount ($)
               </label>
+
               <input
                 type="number"
                 name="amount"
@@ -96,29 +158,12 @@ export default function Drawer({ open, onClose, title = "Money Transfer" }) {
               />
             </div>
 
-            {/* Transfer Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Transfer Type
-              </label>
-              <select
-                name="transferType"
-                value={formData.transferType}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="IMPS">IMPS</option>
-                <option value="NEFT">NEFT</option>
-                <option value="RTGS">RTGS</option>
-                <option value="UPI">UPI</option>
-              </select>
-            </div>
-
             {/* Note */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Note (Optional)
               </label>
+
               <textarea
                 name="note"
                 rows="3"
@@ -134,7 +179,7 @@ export default function Drawer({ open, onClose, title = "Money Transfer" }) {
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition"
             >
-              Transfer Money
+              {isSendMoney ? "Send Money" : "Add Money"}
             </button>
           </form>
         </div>
