@@ -8,9 +8,13 @@ export default function Signup() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,11 +25,25 @@ export default function Signup() {
       return;
     }
 
+    setLoading(true);
     try {
-      await signup({ name, email, password }); // implement signup in AuthContext
-      navigate("/"); // redirect to dashboard
+      await signup({
+        name,
+        email,
+        password,
+        phone,
+        address,
+        avatarUrl,
+      });
+      navigate("/login");
     } catch (err) {
-      setError("Signup failed. Try again.");
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Signup failed. Try again.";
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,6 +84,41 @@ export default function Signup() {
           </div>
 
           <div>
+            <label className="block text-gray-700 mb-1">Phone</label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="+1-416-555-0123"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1">Address</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="221B King St W, Toronto, ON"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1">
+              Avatar URL (optional)
+            </label>
+            <input
+              type="text"
+              value={avatarUrl}
+              onChange={(e) => setAvatarUrl(e.target.value)}
+              className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="https://i.pravatar.cc/150?img=32"
+            />
+          </div>
+
+          <div>
             <label className="block text-gray-700 mb-1">Password</label>
             <input
               type="password"
@@ -91,9 +144,10 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50 transition"
           >
-            Signup
+            {loading ? "Signing up..." : "Signup"}
           </button>
         </form>
 

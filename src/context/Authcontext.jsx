@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
     localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user"))
-      : null
+      : null,
   );
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [loading, setLoading] = useState(false); // optional for async
@@ -30,6 +30,14 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  const redirectAfterAuth = (userRole) => {
+    if (userRole === "ADMIN") {
+      navigate("/admin-panel", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
   const login = async (email, password) => {
     setLoading(true);
     try {
@@ -37,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      console.log("Login response:", response);
+
       if (!response) {
         throw new Error(response?.message || "Invalid credentials");
       }
@@ -48,7 +56,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user_id", response?.data?.user?.id);
       setUser(response?.data?.user);
       setRole(response?.data?.user?.role); // or response.user.role;
-      navigate("/admin-panel", { replace: true });
+
+      redirectAfterAuth(response?.data?.user?.role);
 
       if (response?.data?.token) {
         // optional token storage
@@ -56,16 +65,65 @@ export const AuthProvider = ({ children }) => {
       }
 
       return response;
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed. Try again.";
+      throw new Error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  const signup = async ({ name, email, password }) => {
+  const signup = async ({
+    name,
+    email,
+    password,
+    phone,
+    address,
+    avatarUrl,
+  }) => {
     setLoading(true);
+
     try {
-      await new Promise((res) => setTimeout(res, 500));
-      setUser({ name, email, role: "User" });
+      const data = await AxiosClient("auth/register", "post", {
+        name,
+        email,
+        password,
+        phone,
+        address,
+        avatarUrl,
+      });
+
+      const userDto = data.data;
+      setUser({
+        id: userDto.user.id,
+        name: userDto.user.name,
+        email: userDto.user.email,
+        role: userDto.user.role,
+        avatarUrl: userDto.user.avatarUrl,
+      });
+
+      localStorage.setItem("user", JSON.stringify(userDto.user));
+      localStorage.setItem("role", userDto.user.role);
+      localStorage.setItem("user_id", userDto.user.id);
+
+      setRole(userDto.user.role); // or response.user.role;
+      redirectAfterAuth(data?.data?.user?.role);
+
+      if (data?.data?.token) {
+        // optional token storage
+        localStorage.setItem("token", data?.data?.token);
+      }
+
+      return data;
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Signup failed. Try again.";
+      throw new Error(msg);
     } finally {
       setLoading(false);
     }
@@ -78,7 +136,10 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setRole(null);
-    localStorage.clear();
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("token");
     navigate("/login", { replace: true });
   };
 
